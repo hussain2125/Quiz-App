@@ -1,17 +1,17 @@
+import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 
 const Result = ({ navigation, route }) => {
-  const { score } = route.params;
+  const { score, total } = route.params;
+
   return (
     <View style={styles.container}>
       <View style={styles.subContainer}>
-        <Text style={{ fontSize: 50 }}>Your Score</Text>
-
+        <Text style={{ fontSize: 50, color: "#fff" }}>Your Score</Text>
         <View style={styles.textWrapper}>
           <Text style={styles.score}>{score}</Text>
-          <Text style={styles.score}> / 3</Text>
+          <Text style={styles.score}> / {total}</Text>
         </View>
-        {/* Retry Quiz button */}
         <TouchableOpacity
           onPress={() => {
             navigation.navigate("Welcome");
@@ -64,4 +64,5 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
 });
+
 export default Result;

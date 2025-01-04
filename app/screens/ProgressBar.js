@@ -1,14 +1,12 @@
 import React from "react";
 import { View, Animated, StyleSheet } from "react-native";
-import data from "../../QuizData";
 
-const ProgressBar = ({ progress }) => {
-  const allQuestions = data;
-
+const ProgressBar = ({ progress, totalQuestions }) => {
   const progressAnim = progress.interpolate({
-    inputRange: [0, allQuestions.length],
+    inputRange: [0, totalQuestions],
     outputRange: ["0%", "100%"],
   });
+
   return (
     <View style={styles.progressBarContainer}>
       <Animated.View
@@ -36,4 +34,5 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 });
+
 export default ProgressBar;

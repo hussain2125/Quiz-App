@@ -44,8 +44,7 @@ const Welcome = ({ navigation }) => {
       </View>
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate("Quiz");
-          startQuiz();
+          navigation.navigate("QuizList");
         }}
         style={styles.btn}
       >
