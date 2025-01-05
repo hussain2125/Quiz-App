@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, StatusBar } from "react-native";
 
 const Result = ({ navigation, route }) => {
   const { score, total } = route.params;
@@ -7,7 +7,7 @@ const Result = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <View style={styles.subContainer}>
-        <Text style={{ fontSize: 50, color: "#fff" }}>Your Score</Text>
+        <Text style={{ fontSize: 50, color: "#fff", fontFamily: "ProductSans"  }}>Your Score</Text>
         <View style={styles.textWrapper}>
           <Text style={styles.score}>{score}</Text>
           <Text style={styles.score}> / {total}</Text>
@@ -21,6 +21,7 @@ const Result = ({ navigation, route }) => {
           <Text style={styles.btnText}>Retry</Text>
         </TouchableOpacity>
       </View>
+      <StatusBar hidden={true}/>
     </View>
   );
 };
@@ -49,6 +50,7 @@ const styles = StyleSheet.create({
     fontSize: 100,
     color: "#ffffff",
     fontWeight: "bold",
+    fontFamily: "ProductSans",
   },
   btnReset: {
     backgroundColor: "#333",
@@ -62,6 +64,7 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontSize: 20,
     letterSpacing: 1,
+    fontFamily: "ProductSans",
   },
 });
 

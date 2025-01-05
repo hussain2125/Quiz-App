@@ -1,26 +1,29 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import React, { useState, useRef } from "react";
+import { View, Text, TouchableOpacity, StyleSheet, Animated, StatusBar } from "react-native";
 import { useQuiz } from "../context/QuizContext";
+import ProgressBar from "../screens/ProgressBar";
 
 const QuizPage = ({ route, navigation }) => {
   const { quizId } = route.params;
   const { quizzes } = useQuiz();
- 
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   const [score, setScore] = useState(0);
 
+  const progress = useRef(new Animated.Value(0)).current; // Initialize progress as an Animated.Value
+
   const allQuestions = quizzes[quizId]?.questions;
 
-if (!allQuestions) {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.errorText}>No Questions Available for this Quiz!</Text>
-    </View>
-  );
-}
-
+  if (!allQuestions) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.errorText}>
+          No Questions Available for this Quiz!
+        </Text>
+      </View>
+    );
+  }
 
   const handleOptionSelect = (option) => {
     setSelectedOption(option);
@@ -29,39 +32,26 @@ if (!allQuestions) {
     }
   };
 
-  const renderOptions = () => {
-    const currentQuestion = allQuestions[currentQuestionIndex];
-
-    return currentQuestion.options.map((option, index) => {
-      const isCorrect = option === currentQuestion.correct_option;
-      const isSelected = option === selectedOption;
-      const backgroundColor = selectedOption
-        ? isCorrect
-          ? "#7be25b" // Green for correct
-          : isSelected
-          ? "#f0222b" // Red for incorrect
-          : "#cfcdcc" // Gray for unselected
-        : "#fac782"; // Default color
-
-      return (
-        <TouchableOpacity
-          key={index}
-          style={[styles.optionButton, { backgroundColor }]}
-          onPress={() => handleOptionSelect(option)}
-          disabled={!!selectedOption}
-        >
-          <Text style={styles.optionText}>{option}</Text>
-        </TouchableOpacity>
-      );
-    });
-  };
-
   const handleNext = () => {
     if (currentQuestionIndex < allQuestions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setSelectedOption(null);
+
+      // Animate progress bar
+      Animated.timing(progress, {
+        toValue: (currentQuestionIndex + 1) / allQuestions.length, // Fractional progress
+        duration: 200,
+        useNativeDriver: false,
+      }).start();
     } else {
-      navigation.navigate("Result", { score, total: allQuestions.length });
+      // Animate to complete (100%) before navigating to results
+      Animated.timing(progress, {
+        toValue: 1, // 100% progress
+        duration: 200,
+        useNativeDriver: false,
+      }).start(() => {
+        navigation.navigate("Result", { score, total: allQuestions.length });
+      });
     }
   };
 
@@ -69,8 +59,45 @@ if (!allQuestions) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.question}>{currentQuestion.question}</Text>
-      {renderOptions()}
+      {/* Progress Bar */}
+      <ProgressBar progress={progress} totalQuestions={1} />
+
+      {/* White Box for the Question */}
+      <View style={styles.questionBox}>
+        {/* Question Number */}
+        <Text style={styles.questionCounter}>
+          {currentQuestionIndex + 1} / {allQuestions.length}
+        </Text>
+        <Text style={styles.question}>{currentQuestion.question}</Text>
+      </View>
+
+      {/* Options */}
+      <View style={styles.optionsContainer}>
+        {currentQuestion.options.map((option, index) => {
+          const isCorrect = option === currentQuestion.correct_option;
+          const isSelected = option === selectedOption;
+          const backgroundColor = selectedOption
+            ? isCorrect
+              ? "#7be25b" // Green for correct
+              : isSelected
+              ? "#f0222b" // Red for incorrect
+              : "#cfcdcc" // Gray for unselected
+            : "#fac782"; // Default color
+
+          return (
+            <TouchableOpacity
+              key={index}
+              style={[styles.optionButton, { backgroundColor }]}
+              onPress={() => handleOptionSelect(option)}
+              disabled={!!selectedOption}
+            >
+              <Text style={styles.optionText}>{option}</Text>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+
+      {/* Next Button */}
       <TouchableOpacity
         style={[
           styles.nextButton,
@@ -81,6 +108,7 @@ if (!allQuestions) {
       >
         <Text style={styles.nextButtonText}>Next</Text>
       </TouchableOpacity>
+      <StatusBar backgroundColor="#fac782" hidden={false}/>
     </View>
   );
 };
@@ -92,11 +120,35 @@ const styles = StyleSheet.create({
     backgroundColor: "#38588b",
     justifyContent: "center",
   },
+  questionBox: {
+    backgroundColor: "#fff",
+    borderRadius: 15,
+    padding: 20,
+    marginBottom: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 5,
+    position: "relative",
+  },
+  questionCounter: {
+    fontSize: 14,
+    color: "#888",
+    position: "absolute",
+    top: 10,
+    right: 15,
+    fontFamily: "ProductSans",
+  },
   question: {
     fontSize: 20,
-    color: "#fff",
-    marginBottom: 20,
+    color: "#333",
     textAlign: "center",
+    fontFamily: "ProductSans",
+    marginVertical: 10,
+  },
+  optionsContainer: {
+    marginVertical: 20,
   },
   optionButton: {
     backgroundColor: "#fac782",
@@ -104,27 +156,26 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginVertical: 10,
   },
-  selectedOption: {
-    backgroundColor: "#7be25b",
-  },
   optionText: {
-    fontSize: 16,
-    color: "#fff",
+    fontSize: 19,
+    color: "black",
     textAlign: "center",
+    fontFamily: "ProductSans",
   },
   nextButton: {
     backgroundColor: "#7be25b",
-    padding: 15,
     borderRadius: 10,
-    marginTop: 50,
+    marginTop: 20,
+    alignItems: "center",
   },
   disabledNextButton: {
     backgroundColor: "#cfcdcc",
   },
   nextButtonText: {
-    fontSize: 18,
-    color: "#fff",
+    fontSize: 26,
+    color: "black",
     textAlign: "center",
+    fontFamily: "Bungee",
   },
   errorText: {
     color: "#fff",

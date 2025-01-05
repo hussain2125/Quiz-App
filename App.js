@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { View, ActivityIndicator } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import * as Font from "expo-font";
 import Welcome from "./app/screens/Welcome";
 import QuizList from "./app/screens/QuizList";
 import QuizPage from "./app/screens/QuizPage";
@@ -10,7 +12,29 @@ import { QuizProvider } from "./app/context/QuizContext";
 
 const Stack = createNativeStackNavigator();
 
+const loadFonts = async () => {
+  await Font.loadAsync({
+    Bungee: require("./app/assets/fonts/Bungee.ttf"),
+    ProductSans: require("./app/assets/fonts/ProductSans.ttf"),
+    ProductSansBold: require("./app/assets/fonts/ProductSans-Bold.ttf"),
+  });
+};
+
 export default function App() {
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  useEffect(() => {
+    loadFonts().then(() => setFontsLoaded(true));
+  }, []);
+
+  if (!fontsLoaded) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
   return (
     <QuizProvider>
       <NavigationContainer>
@@ -25,9 +49,11 @@ export default function App() {
             component={QuizList}
             options={{
               title: "Available Quizzes",
-              headerStyle: { backgroundColor: "#fac782" },
+              headerStyle: { backgroundColor: "#00ADB5" },
               headerTintColor: "#fff",
-              headerTitleStyle: { fontWeight: "bold" },
+              headerTitleStyle: {
+                fontFamily: "Bungee", // Apply Bungee for header
+              },
             }}
           />
           <Stack.Screen
@@ -36,8 +62,10 @@ export default function App() {
             options={{
               title: "Questions",
               headerStyle: { backgroundColor: "#fac782" },
-              headerTintColor: "#fff",
-              headerTitleStyle: { fontWeight: "bold" },
+              headerTintColor: "black",
+              headerTitleStyle: {
+                fontFamily: "Bungee", // Apply Bungee for header
+              },
             }}
           />
           <Stack.Screen
@@ -46,8 +74,10 @@ export default function App() {
             options={{
               title: "Create Quiz",
               headerStyle: { backgroundColor: "#7be25b" },
-              headerTintColor: "#fff",
-              headerTitleStyle: { fontWeight: "bold" },
+              headerTintColor: '#1B2021',
+              headerTitleStyle: {
+                fontFamily: "Bungee", // Apply Bungee for header
+              },
             }}
           />
           <Stack.Screen

@@ -1,68 +1,43 @@
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useState, useContext, useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const QuizContext = createContext();
 
 export const useQuiz = () => useContext(QuizContext);
 
 export const QuizProvider = ({ children }) => {
-  const [quizzes, setQuizzes] = useState({
-    1: {
-      title: "Traffic Rules Quiz",
-      questions: [
-        { 
-          question: "What should you do when approaching a yellow traffic light?",
-          options: [
-            "Speed up and cross the intersection quickly",
-            "Come to a complete stop",
-            "Slow down and prepare to stop",
-            "Ignore the light and continue driving",
-          ],
-          correct_option: "Slow down and prepare to stop",
-        },
-        {
-          question: "What does a red octagonal sign indicate?",
-          options: [
-            "Yield right of way",
-            "Stop and proceed when safe",
-            "Merge with traffic",
-            "No left turn allowed",
-          ],
-          correct_option: "Stop and proceed when safe",
-        },
-      ],
-    },
-    2: {
-      title: "General Knowledge Quiz",
-      questions: [
-        {
-          question: "Who wrote 'Hamlet'?",
-          options: [
-            "Charles Dickens",
-            "William Shakespeare",
-            "Mark Twain",
-            "Jane Austen",
-          ],
-          correct_option: "William Shakespeare",
-        },
-        {
-          question: "What is the capital of France?",
-          options: ["Berlin", "Madrid", "Paris", "Lisbon"],
-          correct_option: "Paris",
-        },
-      ],
-    },
-  });
-  
+  const [quizzes, setQuizzes] = useState({});
 
-  const addQuiz = (quizId, title, questions) => {
-    setQuizzes((prev) => ({
-      ...prev,
+  useEffect(() => {
+    // Load quizzes from storage when the app starts
+    const loadQuizzes = async () => {
+      const storedQuizzes = await AsyncStorage.getItem("quizzes");
+      if (storedQuizzes) {
+        setQuizzes(JSON.parse(storedQuizzes));
+      }
+    };
+    loadQuizzes();
+  }, []);
+
+  const addQuiz = async (quizId, title, questions) => {
+    const newQuizzes = {
+      ...quizzes,
       [quizId]: { title, questions },
-    }));
+    };
+    setQuizzes(newQuizzes);
+    await AsyncStorage.setItem("quizzes", JSON.stringify(newQuizzes)); // Save to storage
   };
 
+  const deleteQuiz = async (quizId) => {
+    const updatedQuizzes = { ...quizzes };
+    delete updatedQuizzes[quizId]; // Remove the quiz from the state
+  
+    setQuizzes(updatedQuizzes); // Update the state
+    await AsyncStorage.setItem("quizzes", JSON.stringify(updatedQuizzes)); // Save to storage
+  };
+  
   return (
-    <QuizContext.Provider value={{ quizzes, addQuiz }}>
+    <QuizContext.Provider value={{ quizzes, addQuiz, deleteQuiz }}>
       {children}
     </QuizContext.Provider>
   );

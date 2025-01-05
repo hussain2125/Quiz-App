@@ -6,7 +6,11 @@ import {
   TouchableOpacity,
   FlatList,
   StyleSheet,
+  StatusBar,
+  Modal,
 } from "react-native";
+import Icon from 'react-native-vector-icons/Ionicons';
+
 import { useQuiz } from "../context/QuizContext";
 
 const CreateQuiz = ({ navigation }) => {
@@ -17,6 +21,21 @@ const CreateQuiz = ({ navigation }) => {
   const [currentQuestion, setCurrentQuestion] = useState("");
   const [options, setOptions] = useState(["", "", "", ""]);
   const [correctOptionIndex, setCorrectOptionIndex] = useState(null);
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  // Toggle Modal
+  const toggleModal = () => setModalVisible(!isModalVisible);
+
+  // Header-right button
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity onPress={toggleModal}>
+          <Icon name="information-circle-outline" size={30} color="#000" />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
 
   const handleAddQuestion = () => {
     if (
@@ -65,6 +84,36 @@ const CreateQuiz = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      {/* Modal */}
+      <Modal
+        visible={isModalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={toggleModal}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalTitle}>How to Create a Quiz</Text>
+            <Text style={styles.modalInstruction}>• Provide a meaningful quiz title.</Text>
+            <Text style={styles.modalInstruction}>
+              • Add questions and their respective options (minimum 4).
+            </Text>
+            <Text style={styles.modalInstruction}>
+              • Select the correct option for each question.
+            </Text>
+            <Text style={styles.modalInstruction}>
+              • Click "Add Question" after entering the Question & Options.
+            </Text>
+            <Text style={styles.modalInstruction}>
+              • Once you've added all questions, click "Add Quiz" to save.
+            </Text>
+            <TouchableOpacity style={styles.closeModalButton} onPress={toggleModal}>
+              <Text style={styles.closeModalButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
       <Text style={styles.heading}>Create a New Quiz</Text>
       <TextInput
         style={styles.input}
@@ -119,6 +168,7 @@ const CreateQuiz = ({ navigation }) => {
       <TouchableOpacity style={styles.addQuizButton} onPress={handleAddQuiz}>
         <Text style={styles.addQuizButtonText}>Add Quiz</Text>
       </TouchableOpacity>
+      <StatusBar backgroundColor="#7be25b" hidden={false} />
     </View>
   );
 };
@@ -130,17 +180,59 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: "center",
   },
+
+
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContainer: {
+    width: "80%",
+    backgroundColor: "#ffffff",
+    borderRadius: 10,
+    padding: 20,
+    alignItems: "center",
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  modalInstruction: {
+    fontSize: 16,
+    marginBottom: 5,
+    textAlign: "left",
+    width: "100%",
+  },
+  closeModalButton: {
+    marginTop: 20,
+    backgroundColor: "#7be25b",
+    padding: 10,
+    borderRadius: 5,
+    paddingHorizontal: 30,
+  },
+  closeModalButtonText: {
+    color: "#1B2021",
+    fontWeight: "bold",
+  },
+  // ... (rest of the existing styles remain unchanged)
+
   heading: {
     fontSize: 24,
     color: "#ffffff",
     marginBottom: 20,
+    fontFamily: "ProductSans",
   },
   subheading: {
     fontSize: 18,
     color: "#ffffff",
     marginVertical: 10,
+    fontFamily: "ProductSans",
   },
   input: {
+    fontFamily: "ProductSans",
     backgroundColor: "#ffffff",
     borderRadius: 10,
     padding: 10,
@@ -149,6 +241,7 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   optionInput: {
+    fontFamily: "ProductSans",
     backgroundColor: "#ffffff",
     borderRadius: 10,
     padding: 10,
@@ -171,6 +264,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#7be25b",
   },
   correctOptionText: {
+    fontFamily: "ProductSans",
     color: "#333",
   },
   addQuestionButton: {
@@ -183,7 +277,8 @@ const styles = StyleSheet.create({
   },
   addQuestionButtonText: {
     fontSize: 18,
-    color: "#ffffff",
+    fontFamily: "ProductSans",
+    color: "#1B2021",
   },
   questionPreview: {
     marginTop: 10,
@@ -194,10 +289,11 @@ const styles = StyleSheet.create({
   },
   questionPreviewText: {
     color: "#333",
+    fontFamily: "ProductSans",
   },
   addQuizButton: {
-    backgroundColor: "#fac782",
-    padding: 15,
+    backgroundColor: "#7be25b",
+    padding: 5,
     borderRadius: 10,
     marginTop: 20,
     width: "80%",
@@ -205,7 +301,8 @@ const styles = StyleSheet.create({
   },
   addQuizButtonText: {
     fontSize: 18,
-    color: "#ffffff",
+    fontFamily: "Bungee",
+    color: "#1B2021",
   },
 });
 
