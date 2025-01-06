@@ -53,7 +53,7 @@ const Welcome = ({ navigation }) => {
             Let's Begin
           </Text>
         </Pressable>
-
+       
         {/* Modal */}
         <Modal
           isVisible={isModalVisible}
@@ -70,7 +70,7 @@ const Welcome = ({ navigation }) => {
             {/* Modal Body */}
             <Text style={styles.modalTitle}>Quiz App</Text>
             <Text style={styles.modalDescription}>
-              Developed by Hussain ©2024
+              Developed by Hussain ©2025
             </Text>
             <Text style={[styles.modalDescription, {marginBottom: 5}]}>
               Bahauddin Zakariya University{"\n"} (7th Semester Project)
@@ -121,7 +121,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 10,
     right: 20,
-    
     width: 40,
     height: 40,
     borderRadius: 20,
@@ -152,8 +151,8 @@ const styles = StyleSheet.create({
   },
   btn: {
     backgroundColor: "#00ADB5",
-    paddingHorizontal: 50,
-    paddingVertical: 10,
+    paddingHorizontal: 70,
+    paddingVertical: 5,
     borderRadius: 15,
     marginHorizontal: 20,
     alignItems: "center",

@@ -35,7 +35,7 @@ Simple and easy to follow guide to start a Quiz App which uses the Navigation an
 
 ## Run the app
 
-- git clone https://github.com/n-bhasin/ReactNative-QuizApp.git
+- git clone https://github.com/hussain2125/Quiz-App.git
 - cd ReactNative-QuizApp
 - yarn install
 - yarn run ios

@@ -8,6 +8,7 @@ import QuizList from "./app/screens/QuizList";
 import QuizPage from "./app/screens/QuizPage";
 import CreateQuiz from "./app/screens/CreateQuiz";
 import Result from "./app/screens/Result";
+import PostQuiz from "./app/screens/PostQuiz"; // Import PostQuiz screen
 import { QuizProvider } from "./app/context/QuizContext";
 
 const Stack = createNativeStackNavigator();
@@ -73,6 +74,18 @@ export default function App() {
             component={CreateQuiz}
             options={{
               title: "Create Quiz",
+              headerStyle: { backgroundColor: "#7be25b" },
+              headerTintColor: '#1B2021',
+              headerTitleStyle: {
+                fontFamily: "Bungee", // Apply Bungee for header
+              },
+            }}
+          />
+          <Stack.Screen
+            name="PostQuiz"
+            component={PostQuiz} // Add PostQuiz screen
+            options={{
+              title: "Post Quiz",
               headerStyle: { backgroundColor: "#7be25b" },
               headerTintColor: '#1B2021',
               headerTitleStyle: {

@@ -21,13 +21,19 @@
       "adaptiveIcon": {
         "foregroundImage": "./app/assets/welcome.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.hussain2125.quizapp"
     },
     "web": {
       "favicon": "./app/assets/welcome.png"
     },
     "plugins": [
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "c03ce832-049f-41ec-85cc-69e441fde7be"
+      }
+    }
   }
 }

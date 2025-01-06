@@ -13,8 +13,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import { useQuiz } from "../context/QuizContext";
 
-const CreateQuiz = ({ navigation }) => {
-  const { addQuiz } = useQuiz();
+const PostQuiz = ({ navigation }) => {
+  const { createPublicQuiz } = useQuiz();
 
   const [title, setTitle] = useState("");
   const [questions, setQuestions] = useState([]);
@@ -59,8 +59,8 @@ const CreateQuiz = ({ navigation }) => {
 
   const handleAddQuiz = () => {
     if (title.trim() && questions.length > 0) {
-      const quizId = Date.now().toString(); // Unique ID for the quiz
-      addQuiz(quizId, title, questions);
+      const quizData = { title, questions };
+      createPublicQuiz(quizData);
       navigation.goBack(); // Return to the QuizList screen
     } else {
       alert("Please provide a title and add at least one question.");
@@ -162,6 +162,11 @@ const CreateQuiz = ({ navigation }) => {
             <Text style={styles.questionPreviewText}>
               {index + 1}. {item.question}
             </Text>
+            {item.options.map((option, optIndex) => (
+              <Text key={optIndex} style={styles.optionPreviewText}>
+                {String.fromCharCode(65 + optIndex)}. {option}
+              </Text>
+            ))}
           </View>
         )}
       />
@@ -288,6 +293,11 @@ const styles = StyleSheet.create({
     color: "#333",
     fontFamily: "ProductSans",
   },
+  optionPreviewText: {
+    color: "#333",
+    fontFamily: "ProductSans",
+    marginLeft: 10,
+  },
   addQuizButton: {
     backgroundColor: "#7be25b",
     padding: 5,
@@ -303,4 +313,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CreateQuiz;
+export default PostQuiz;
